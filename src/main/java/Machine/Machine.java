@@ -111,7 +111,7 @@ public class Machine implements VendingMachine {
         if (currentBalance > 50) {
             throw new TooMuchMoneyException("You can't introduce more than 50 RON in the machine");
         }
-        if (currentBalance >= currentItem.getPrice() && currentBalance <= 50){
+        if (currentBalance >= currentItem.getPrice() && currentBalance <= 50) {
             return true;
         }
         return false;
@@ -124,8 +124,9 @@ public class Machine implements VendingMachine {
             changes = new ArrayList<>();
             long balance = amount;
             while (balance > 0) {
-                if (balance >= Money.UnLEU.getvalue() && cashInventory.hasItem(Money.UnLEU)) {
-                    balance = (long) (balance - Money.UnLEU.getvalue());
+                if (balance >= Money.ZeceLEI.getvalue() && cashInventory.hasItem(Money.ZeceLEI)) {
+                    changes.add(Money.ZeceLEI);
+                    balance = (long) (balance - Money.ZeceLEI.getvalue());
                     continue;
 
                 } else if (balance >= Money.CinciLEI.getvalue() && cashInventory.hasItem(Money.CinciLEI)) {
@@ -133,19 +134,19 @@ public class Machine implements VendingMachine {
                     balance = (long) (balance - Money.CinciLEI.getvalue());
                     continue;
 
-                } else if (balance >= Money.ZeceLEI.getvalue() && cashInventory.hasItem(Money.ZeceLEI)) {
-                    changes.add(Money.ZeceLEI);
-                    balance = (long) (balance - Money.ZeceLEI.getvalue());
-                    continue;
-
-                } else if (balance >= Money.ZeceBANI.getvalue() && cashInventory.hasItem(Money.ZeceBANI)) {
-                    changes.add(Money.ZeceBANI);
-                    balance = (long) (balance - Money.ZeceBANI.getvalue());
+                } else if (balance >= Money.UnLEU.getvalue() && cashInventory.hasItem(Money.UnLEU)) {
+                    changes.add(Money.UnLEU);
+                    balance = (long) (balance - Money.UnLEU.getvalue());
                     continue;
 
                 } else if (balance >= Money.CinzeciBANI.getvalue() && cashInventory.hasItem(Money.CinzeciBANI)) {
                     changes.add(Money.CinzeciBANI);
                     balance = (long) (balance - Money.CinzeciBANI.getvalue());
+                    continue;
+
+                } else if (balance >= Money.ZeceBANI.getvalue() && cashInventory.hasItem(Money.ZeceBANI)) {
+                    changes.add(Money.ZeceBANI);
+                    balance = (long) (balance - Money.ZeceBANI.getvalue());
                     continue;
 
                 } else {
@@ -186,7 +187,6 @@ public class Machine implements VendingMachine {
     public long getTotalSales() {
         return totalSales;
     }
-
 
 
 }
