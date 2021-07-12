@@ -6,6 +6,9 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
+/**
+ * This class describes the Nutline product, which has a name, price and weight.
+ */
 public class Nutline {
     private static final String name = "Nutline";
     private static final double price = 2.5;

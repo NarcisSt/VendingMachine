@@ -6,6 +6,9 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
+/**
+ * This class describes the Mars product, which has a name, price and weight.
+ */
 public class Mars {
     private static final String name = "Mars";
     private static final double price = 1.7;

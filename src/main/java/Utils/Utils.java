@@ -4,6 +4,9 @@ import Shell.*;
 
 import java.util.*;
 
+/**
+ * Class Utils contains methods that will help with the shell commands and the logic of the machine.
+ */
 public class Utils {
     /**
      * Method that checks if a string given as parameter is a positive integer

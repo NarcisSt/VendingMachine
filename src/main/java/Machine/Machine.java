@@ -6,6 +6,9 @@ import lombok.*;
 @Setter
 @ToString
 @EqualsAndHashCode
+/**
+ * This class describes the vending machine
+ */
 public class Machine {
     private static Machine INSTANCE;
     private static final String name = "Continental Vending Machine";
@@ -16,6 +19,10 @@ public class Machine {
 
     }
 
+    /**
+     * Static factory method for obtaining the instance
+     * @return the INSTANCE
+     */
     public static Machine getInstance() {
         if(INSTANCE == null) {
             INSTANCE = new Machine();
