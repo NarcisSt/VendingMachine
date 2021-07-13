@@ -31,7 +31,7 @@ public class Machine implements VendingMachine {
         initialize();
     }
 
-    private void initialize() {
+    public void initialize() {
         for (Money c : Money.values()) {
             cashInventory.put(c, 5);
         }
@@ -164,6 +164,24 @@ public class Machine implements VendingMachine {
         System.out.println("Current Cash Inventory : " + cashInventory);
     }
 
+    public void welcomeMessage() {
+        System.out.println("#########################################################");
+        System.out.println("#################### Vending Machine ####################");
+        System.out.println("#########################################################");
+        System.out.println("Welcome!!");
+        System.out.println("These are your options:");
+    }
+
+    public void printOptions() {
+        System.out.println("1. List");
+        System.out.println("2. Coke      7 RON");
+        System.out.println("3. Lays      3 RON");
+        System.out.println("4. Snickers  1.9 RON");
+        System.out.println("5. Mask      2 RON");
+        System.out.println("6. Sandwich  13 RON");
+        System.out.println("7. Quit");
+    }
+
     private boolean hasSufficientChange() {
         return hasSufficientChangeForAmount((long) (currentBalance - currentItem.getPrice()));
     }
@@ -178,7 +196,7 @@ public class Machine implements VendingMachine {
         return hasChange;
     }
 
-    private void updateCashInventory(List change) {
+    private void updateCashInventory(List<Money> change) {
         for (Money c : change) {
             cashInventory.deduct(c);
         }
