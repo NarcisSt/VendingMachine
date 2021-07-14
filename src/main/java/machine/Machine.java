@@ -18,12 +18,9 @@ import java.util.Scanner;
 @Setter
 @ToString
 @EqualsAndHashCode
-/**
- * This class describes the vending machine
- */
 public class Machine implements VendingMachine {
-    private Inventory<Money> cashInventory = new Inventory<Money>();
-    private Inventory<Item> itemInventory = new Inventory<Item>();
+    private Inventory<Money> cashInventory = new Inventory<>();
+    private Inventory<Item> itemInventory = new Inventory<>();
     private long totalSales;
     private Item currentItem;
     private long currentBalance;
@@ -34,10 +31,10 @@ public class Machine implements VendingMachine {
 
     public void initialize() {
         for (Money c : Money.values()) {
-            cashInventory.put(c, 5);
+            cashInventory.put(c, 50);
         }
         for (Item i : Item.values()) {
-            itemInventory.put(i, 5);
+            itemInventory.put(i, 50);
         }
     }
 
@@ -70,14 +67,14 @@ public class Machine implements VendingMachine {
 
     }
 
-    @Override
-    public Bucket<Item, List<Money>> collectItemAndChange() {
-        Item item = collectItem();
-        totalSales = (long) (totalSales + currentItem.getPrice());
-        List<Money> change = collectChange();
-        return new Bucket<Item, List<Money>>(item, change);
-
-    }
+//    @Override
+//    public Bucket<Item, List<Money>> collectItemAndChange() {
+//        Item item = collectItem();
+//        totalSales = (long) (totalSales + currentItem.getPrice());
+//        List<Money> change = collectChange();
+//        return new Bucket<Item, List<Money>>(item, change);
+//
+//    }
 
     @Override
     public void reset() {
@@ -89,18 +86,18 @@ public class Machine implements VendingMachine {
 
     }
 
-    private Item collectItem() throws NotSufficientChangeException, NotFullPaidException {
+    private void collectItem(Item item) throws NotSufficientChangeException, NotFullPaidException {
         if (isFullPaid()) {
             if (hasSufficientChange()) {
                 itemInventory.deduct(currentItem);
-                return currentItem;
+            } else {
+                throw new NotSufficientChangeException("Not Sufficient change in Inventory");
             }
-            throw new NotSufficientChangeException("Not Sufficient change in Inventory");
+        } else {
+            long remainingBalance = (long) (currentItem.getPrice() - currentBalance);
+            throw new NotFullPaidException("Price not full paid, remaining : ", remainingBalance);
         }
-        long remainingBalance = (long) (currentItem.getPrice() - currentBalance);
-        throw new NotFullPaidException("Price not full paid, remaining : ", remainingBalance);
     }
-
 
     private List<Money> collectChange() {
         long changeAmount = (long) (currentBalance - currentItem.getPrice());
@@ -115,10 +112,7 @@ public class Machine implements VendingMachine {
         if (currentBalance > 50) {
             throw new TooMuchMoneyException("You can't introduce more than 50 RON in the machine");
         }
-        if (currentBalance >= currentItem.getPrice() && currentBalance <= 50) {
-            return true;
-        }
-        return false;
+        return currentBalance >= currentItem.getPrice();
     }
 
     private List<Money> getChange(long amount) throws NotSufficientChangeException {
@@ -169,13 +163,13 @@ public class Machine implements VendingMachine {
     }
 
     public void welcomeMessage() {
-        System.out.println("#########################################################");
         System.out.println("#################### Vending Machine ####################");
-        System.out.println("#########################################################");
         System.out.println("Welcome!!");
     }
 
     public void printOptions() {
+        System.out.println("Here is the current inventory:");
+        printStats();
         System.out.println("These are your options:");
         System.out.println("1. List");
         System.out.println("2. Coke      7 RON");
@@ -190,6 +184,12 @@ public class Machine implements VendingMachine {
 
     public void paymentMessage() {
         System.out.println("Please insert the money in the machine:");
+        System.out.println("Your options are:");
+        System.out.println("ZeceLEI(10)");
+        System.out.println("CinciLEI(5)");
+        System.out.println("UnLEU(1)");
+        System.out.println("CinzeciBANI(0.5)");
+        System.out.println("ZeceBANI(0.1)");
     }
 
     private boolean hasSufficientChange() {
@@ -218,10 +218,54 @@ public class Machine implements VendingMachine {
 
     public void executeProduct(Item item) {
         selectItemAndGetPrice(item);
+        System.out.println("\nYou chose " + item.getName() + " and must introduce " + item.getPrice() + " RON in the machine");
         paymentMessage();
-        Scanner money = new Scanner(System.in);
-        int cash = money.nextInt();
-        System.out.println(cash);
+        while (this.currentBalance < item.getPrice()) {
+            Scanner money = new Scanner(System.in);
+            String cash = money.nextLine();
+            switch (cash) {
+                case "ZeceLEI", "10" -> {
+                    this.currentBalance += Money.ZeceLEI.getvalue();
+                    cashInventory.add(Money.ZeceLEI);
+                    break;
+                }
+                case "CinciLEI", "5" -> {
+                    this.currentBalance += Money.CinciLEI.getvalue();
+                    cashInventory.add(Money.CinciLEI);
+                    break;
+                }
+                case "UnLEU", "1" -> {
+                    this.currentBalance += Money.UnLEU.getvalue();
+                    cashInventory.add(Money.UnLEU);
+                    break;
+                }
+                case "ZeceBANI", "0.1" -> {
+                    this.currentBalance += Money.ZeceBANI.getvalue();
+                    cashInventory.add(Money.ZeceBANI);
+                    break;
+                }
+                case "CinzeciBANI", "0.5" -> {
+                    this.currentBalance += Money.CinzeciBANI.getvalue();
+                    cashInventory.add(Money.CinzeciBANI);
+                    break;
+                }
+                default -> {
+                    System.out.println("You must put one of the options above");
+                    break;
+                }
+            }
+        }
+        collectItem(item);
+        this.totalSales += item.getPrice();
+        long amount = (long) (currentBalance - item.getPrice());
+        List<Money> change = getChange(amount);
+        System.out.println("Here is your change:");
+        for (Money money : change) {
+            System.out.println(money);
+        }
+        updateCashInventory(change);
+        this.currentBalance = 0;
+        printOptions();
     }
 
     public void executeOption() {
@@ -230,50 +274,44 @@ public class Machine implements VendingMachine {
             Scanner console = new Scanner(System.in);
             String option = console.nextLine();
             switch (option) {
-                case "List":
-                case "1": {
+                case "List", "1" -> {
+                    System.out.println("Here is the current inventory:");
+                    printStats();
                     printOptions();
                     break;
                 }
-                case "Coke":
-                case "2": {
+                case "Coke", "2" -> {
                     executeProduct(Item.COLA);
                     break;
                 }
-                case "Lays":
-                case "3": {
+                case "Lays", "3" -> {
                     executeProduct(Item.LAYS);
                     break;
                 }
-                case "Snickers":
-                case "4": {
+                case "Snickers", "4" -> {
                     executeProduct(Item.SNICKERS);
                     break;
                 }
-                case "Mask":
-                case "5": {
+                case "Mask", "5" -> {
                     executeProduct(Item.MASK);
                     break;
                 }
-                case "Sandwich":
-                case "6": {
+                case "Sandwich", "6" -> {
                     executeProduct(Item.SANDWICH);
                     break;
                 }
-                case "Change":
-                case "7": {
+                case "Change", "7" -> {
                     if (this.currentItem == null) {
                         System.out.println("You have to chose a product first");
                     } else {
-                        collectItemAndChange();
+
                     }
                     break;
                 }
-                case "Quit":
-                case "8": {
+                case "Quit", "8" -> {
                     return;
                 }
-                default: {
+                default -> {
                     System.out.println("Invalid option! Please chose one of the options above!");
                     printOptions();
                     break;
