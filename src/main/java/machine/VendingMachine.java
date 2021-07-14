@@ -1,16 +1,13 @@
 package machine;
 
-import inventory.Bucket;
 import items.Item;
-import money.Money;
-
-import java.util.List;
 
 public interface VendingMachine {
-    public long selectItemAndGetPrice(Item item);
-    public void insertMoney(Money money);
-    public List<Money> refund();
-    public Bucket<Item, List<Money>> collectItemAndChange();
-    public void reset();
+    double selectItemAndGetPrice(Item item);
+    void reset();
+    void collectItem();
+    void paymentAction(Item item);
+    void executeProduct(Item item);
+    void executeOption();
 
 }

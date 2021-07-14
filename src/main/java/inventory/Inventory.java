@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Inventory<T> {
-    private Map<T, Integer> inventory = new HashMap<T, Integer>();
+    private final Map<T, Integer> inventory = new HashMap<>();
 
     public int getQuantity(T item) {
         Integer value = inventory.get(item);
@@ -25,10 +25,6 @@ public class Inventory<T> {
 
     public boolean hasItem(T item) {
         return getQuantity(item) > 0;
-    }
-
-    public void clear() {
-        inventory.clear();
     }
 
     public void put(T item, int quantity) {
