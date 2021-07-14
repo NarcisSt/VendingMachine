@@ -1,17 +1,18 @@
-package Machine;
+package machine;
 
-import Exceptions.NotFullPaidException;
-import Exceptions.NotSufficientChangeException;
-import Exceptions.SoldOutException;
-import Exceptions.TooMuchMoneyException;
-import Inventory.*;
-import Items.Item;
-import Money.Money;
+import exceptions.NotFullPaidException;
+import exceptions.NotSufficientChangeException;
+import exceptions.SoldOutException;
+import exceptions.TooMuchMoneyException;
+import inventory.*;
+import items.Item;
+import money.Money;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 @Getter
 @Setter
@@ -51,9 +52,12 @@ public class Machine implements VendingMachine {
     }
 
     @Override
-    public void insertMoney(Money Money) {
-        currentBalance = (long) (currentBalance + Money.getvalue());
-        cashInventory.add(Money);
+    public void insertMoney(Money money) {
+        if (currentBalance > 50) {
+            throw new TooMuchMoneyException("You can't introduce more than 50 RON in the machine");
+        }
+        currentBalance = (long) (currentBalance + money.getvalue());
+        cashInventory.add(money);
     }
 
     @Override
@@ -169,17 +173,23 @@ public class Machine implements VendingMachine {
         System.out.println("#################### Vending Machine ####################");
         System.out.println("#########################################################");
         System.out.println("Welcome!!");
-        System.out.println("These are your options:");
     }
 
     public void printOptions() {
+        System.out.println("These are your options:");
         System.out.println("1. List");
         System.out.println("2. Coke      7 RON");
         System.out.println("3. Lays      3 RON");
         System.out.println("4. Snickers  1.9 RON");
         System.out.println("5. Mask      2 RON");
         System.out.println("6. Sandwich  13 RON");
-        System.out.println("7. Quit");
+        System.out.println("7. Change");
+        System.out.println("8. Quit");
+        System.out.println("Please select one of the items above:");
+    }
+
+    public void paymentMessage() {
+        System.out.println("Please insert the money in the machine:");
     }
 
     private boolean hasSufficientChange() {
@@ -206,5 +216,69 @@ public class Machine implements VendingMachine {
         return totalSales;
     }
 
+    public void executeProduct(Item item) {
+        selectItemAndGetPrice(item);
+        paymentMessage();
+        Scanner money = new Scanner(System.in);
+        int cash = money.nextInt();
+        System.out.println(cash);
+    }
 
+    public void executeOption() {
+
+        while (true) {
+            Scanner console = new Scanner(System.in);
+            String option = console.nextLine();
+            switch (option) {
+                case "List":
+                case "1": {
+                    printOptions();
+                    break;
+                }
+                case "Coke":
+                case "2": {
+                    executeProduct(Item.COLA);
+                    break;
+                }
+                case "Lays":
+                case "3": {
+                    executeProduct(Item.LAYS);
+                    break;
+                }
+                case "Snickers":
+                case "4": {
+                    executeProduct(Item.SNICKERS);
+                    break;
+                }
+                case "Mask":
+                case "5": {
+                    executeProduct(Item.MASK);
+                    break;
+                }
+                case "Sandwich":
+                case "6": {
+                    executeProduct(Item.SANDWICH);
+                    break;
+                }
+                case "Change":
+                case "7": {
+                    if (this.currentItem == null) {
+                        System.out.println("You have to chose a product first");
+                    } else {
+                        collectItemAndChange();
+                    }
+                    break;
+                }
+                case "Quit":
+                case "8": {
+                    return;
+                }
+                default: {
+                    System.out.println("Invalid option! Please chose one of the options above!");
+                    printOptions();
+                    break;
+                }
+            }
+        }
+    }
 }

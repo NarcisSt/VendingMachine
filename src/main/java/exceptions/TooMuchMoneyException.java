@@ -1,4 +1,4 @@
-package Exceptions;
+package exceptions;
 
 public class TooMuchMoneyException extends RuntimeException{
     private String message;

@@ -1,9 +1,9 @@
-package Exceptions;
+package exceptions;
 
-public class NotSufficientChangeException extends RuntimeException {
+public class SoldOutException extends RuntimeException {
     private String message;
 
-    public NotSufficientChangeException(String string) {
+    public SoldOutException(String string) {
         this.message = string;
     }
 

@@ -1,4 +1,4 @@
-package Machine;
+package machine;
 
 public class MachineFactory {
     public static VendingMachine createVendingMachine() {

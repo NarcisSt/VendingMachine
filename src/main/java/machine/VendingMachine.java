@@ -1,8 +1,8 @@
-package Machine;
+package machine;
 
-import Inventory.Bucket;
-import Items.Item;
-import Money.Money;
+import inventory.Bucket;
+import items.Item;
+import money.Money;
 
 import java.util.List;
 
