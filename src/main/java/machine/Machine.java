@@ -1,12 +1,12 @@
-package Machine;
+package machine;
 
-import Exceptions.NotFullPaidException;
-import Exceptions.NotSufficientChangeException;
-import Exceptions.SoldOutException;
-import Exceptions.TooMuchMoneyException;
-import Inventory.*;
-import Items.Item;
-import Money.Money;
+import exceptions.NotFullPaidException;
+import exceptions.NotSufficientChangeException;
+import exceptions.SoldOutException;
+import exceptions.TooMuchMoneyException;
+import inventory.*;
+import items.Item;
+import money.Money;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -52,12 +52,12 @@ public class Machine implements VendingMachine {
     }
 
     @Override
-    public void insertMoney(Money Money) {
+    public void insertMoney(Money money) {
         if (currentBalance > 50) {
             throw new TooMuchMoneyException("You can't introduce more than 50 RON in the machine");
         }
-        currentBalance = (long) (currentBalance + Money.getvalue());
-        cashInventory.add(Money);
+        currentBalance = (long) (currentBalance + money.getvalue());
+        cashInventory.add(money);
     }
 
     @Override
@@ -183,7 +183,9 @@ public class Machine implements VendingMachine {
         System.out.println("4. Snickers  1.9 RON");
         System.out.println("5. Mask      2 RON");
         System.out.println("6. Sandwich  13 RON");
-        System.out.println("7. Quit");
+        System.out.println("7. Change");
+        System.out.println("8. Quit");
+        System.out.println("Please select one of the items above:");
     }
 
     public void paymentMessage() {
@@ -214,7 +216,7 @@ public class Machine implements VendingMachine {
         return totalSales;
     }
 
-    public void executeProduct (Item item) {
+    public void executeProduct(Item item) {
         selectItemAndGetPrice(item);
         paymentMessage();
         Scanner money = new Scanner(System.in);
@@ -222,36 +224,53 @@ public class Machine implements VendingMachine {
         System.out.println(cash);
     }
 
-    public void executeOption(String option) {
+    public void executeOption() {
+
         while (true) {
             Scanner console = new Scanner(System.in);
-            option = console.nextLine();
+            String option = console.nextLine();
             switch (option) {
-                case "List": {
+                case "List":
+                case "1": {
                     printOptions();
                     break;
                 }
-                case "Coke": {
+                case "Coke":
+                case "2": {
                     executeProduct(Item.COLA);
                     break;
                 }
-                case "Lays": {
+                case "Lays":
+                case "3": {
                     executeProduct(Item.LAYS);
                     break;
                 }
-                case "Snickers": {
+                case "Snickers":
+                case "4": {
                     executeProduct(Item.SNICKERS);
                     break;
                 }
-                case "Mask": {
+                case "Mask":
+                case "5": {
                     executeProduct(Item.MASK);
                     break;
                 }
-                case "Sandwich": {
+                case "Sandwich":
+                case "6": {
                     executeProduct(Item.SANDWICH);
                     break;
                 }
-                case "Quit": {
+                case "Change":
+                case "7": {
+                    if (this.currentItem == null) {
+                        System.out.println("You have to chose a product first");
+                    } else {
+                        collectItemAndChange();
+                    }
+                    break;
+                }
+                case "Quit":
+                case "8": {
                     return;
                 }
                 default: {

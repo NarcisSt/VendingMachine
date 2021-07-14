@@ -1,4 +1,4 @@
-package Inventory;
+package inventory;
 
 public class Bucket<E1, E2> {
     private E1 first;

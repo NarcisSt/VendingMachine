@@ -1,4 +1,4 @@
-package Exceptions;
+package exceptions;
 
 public class NotFullPaidException extends RuntimeException {
     private String message;
