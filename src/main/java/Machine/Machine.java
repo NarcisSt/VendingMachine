@@ -12,6 +12,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 @Getter
 @Setter
@@ -52,6 +53,9 @@ public class Machine implements VendingMachine {
 
     @Override
     public void insertMoney(Money Money) {
+        if (currentBalance > 50) {
+            throw new TooMuchMoneyException("You can't introduce more than 50 RON in the machine");
+        }
         currentBalance = (long) (currentBalance + Money.getvalue());
         cashInventory.add(Money);
     }
@@ -169,10 +173,10 @@ public class Machine implements VendingMachine {
         System.out.println("#################### Vending Machine ####################");
         System.out.println("#########################################################");
         System.out.println("Welcome!!");
-        System.out.println("These are your options:");
     }
 
     public void printOptions() {
+        System.out.println("These are your options:");
         System.out.println("1. List");
         System.out.println("2. Coke      7 RON");
         System.out.println("3. Lays      3 RON");
@@ -180,6 +184,10 @@ public class Machine implements VendingMachine {
         System.out.println("5. Mask      2 RON");
         System.out.println("6. Sandwich  13 RON");
         System.out.println("7. Quit");
+    }
+
+    public void paymentMessage() {
+        System.out.println("Please insert the money in the machine:");
     }
 
     private boolean hasSufficientChange() {
@@ -206,5 +214,52 @@ public class Machine implements VendingMachine {
         return totalSales;
     }
 
+    public void executeProduct (Item item) {
+        selectItemAndGetPrice(item);
+        paymentMessage();
+        Scanner money = new Scanner(System.in);
+        int cash = money.nextInt();
+        System.out.println(cash);
+    }
 
+    public void executeOption(String option) {
+        while (true) {
+            Scanner console = new Scanner(System.in);
+            option = console.nextLine();
+            switch (option) {
+                case "List": {
+                    printOptions();
+                    break;
+                }
+                case "Coke": {
+                    executeProduct(Item.COLA);
+                    break;
+                }
+                case "Lays": {
+                    executeProduct(Item.LAYS);
+                    break;
+                }
+                case "Snickers": {
+                    executeProduct(Item.SNICKERS);
+                    break;
+                }
+                case "Mask": {
+                    executeProduct(Item.MASK);
+                    break;
+                }
+                case "Sandwich": {
+                    executeProduct(Item.SANDWICH);
+                    break;
+                }
+                case "Quit": {
+                    return;
+                }
+                default: {
+                    System.out.println("Invalid option! Please chose one of the options above!");
+                    printOptions();
+                    break;
+                }
+            }
+        }
+    }
 }
